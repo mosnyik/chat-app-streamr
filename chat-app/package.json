@@ -1,0 +1,25 @@
+{
+  "name": "chat-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^1.0.3",
+    "autoprefixer": "10.4.14",
+    "ethers": "^5.7.2",
+    "next": "13.4.7",
+    "postcss": "8.4.24",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "streamr-client": "^8.5.3",
+    "streamr-client-react": "^3.0.0-hkt.1",
+    "tailwindcss": "3.3.2",
+    "viem": "^1.1.7",
+    "wagmi": "^1.2.2"
+  }
+}
