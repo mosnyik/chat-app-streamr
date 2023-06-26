@@ -6,9 +6,16 @@ import StreamrClient from 'streamr-client';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
+  const [permission, setPermission] = useState([]);
   const { address, privateKey } = useAccount();
   const streamId = '0x19eC44500065557D91760b3424F05d5416704C8c/chat-app'; // Stream ID for the chat messages
+  const { StreamPermission } = require('streamr-client');
 
+  StreamPermission.PUBLISH;
+  StreamPermission.SUBSCRIBE;
+  StreamPermission.EDIT;
+  StreamPermission.DELETE;
+  StreamPermission.GRANT;
   // Initialize Streamr client
   const client = new StreamrClient({
     auth: {
@@ -41,12 +48,14 @@ const Chat = () => {
             message: content.message,
           };
           setMessages((prevMessages) => [...prevMessages, newMessage]);
-         }
+          setPermission();
+         },
         
       );
+      
     };
-
     subscribeToStream();
+   
 
     // Cleanup subscription when component unmounts
     return () => {
@@ -63,6 +72,19 @@ const Chat = () => {
       message: message,
     });
   };
+
+  useEffect(() => {
+    const grantPublicPermission = async () => {
+      const stream = await client.getStream(streamId);
+      await stream.grantPermissions( {
+        public: true,
+        permissions: [StreamPermission.PUBLISH, StreamPermission.SUBSCRIBE]
+    });
+      console.log('Public permission granted.');
+    };
+
+    grantPublicPermission();
+  }, [client, streamId]);
 
   return (
     <div>
