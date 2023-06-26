@@ -7,51 +7,20 @@ import StreamrClient from 'streamr-client';
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const { address, privateKey } = useAccount();
-  const streamId = '/chat-app'; // Stream ID for the chat messages
+  const streamId = '0x19eC44500065557D91760b3424F05d5416704C8c/chat-app'; // Stream ID for the chat messages
 
   // Initialize Streamr client
   const client = new StreamrClient({
-    // auth: {
-    //   privateKey: privateKey,
-    // },
+    auth: {
+      ethereum: window.ethereum,
+    },
   });
-
-  // useEffect(() => {
-  //   // Subscribe to the Streamr stream
-  //   const subscribeToStream = async () => {
-  //     const stream = await client.subscribe({
-  //       stream: streamId,
-  //     });
-
-  
-
-  //     stream.on('data', (data) => {
-  //       const newMessage = {
-  //         sender: data.sender,
-  //         message: data.message,
-  //       };
-  //       setMessages((prevMessages) => [...prevMessages, newMessage]);
-  //     });
-  //   };
-
-  //   subscribeToStream();
-
-  //   // Cleanup subscription when component unmounts
-  //   return () => {
-  //     client.unsubscribe(streamId);
-  //   };
-  // }, [client, streamId]);
-
   useEffect(() => {
     // Create or get the Streamr stream
     const createOrGetStream = async () => {
       try {
         const stream = await client.getStream(streamId);
         console.log('Stream exists:', stream);
-        await stream.grantPermissions({
-          user: "0x387672310b58e4e0cf62f46a92eca83276407bcd",
-          permissions: [StreamPermission.PUBLISH],
-        });
       } catch (error) {
         console.log('Stream does not exist. Creating a new stream...');
         const createdStream = await client.createStream({ id: streamId });
@@ -60,6 +29,29 @@ const Chat = () => {
     };
 
     createOrGetStream();
+  }, [client, streamId]);
+
+  useEffect(() => {
+    // Subscribe to the Streamr stream
+    const subscribeToStream = async () => {
+      const stream = await client.subscribe(streamId, 
+        (content, metadata) => { 
+          const newMessage = {
+            sender: content.sender,
+            message: content.message,
+          };
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+         }
+        
+      );
+    };
+
+    subscribeToStream();
+
+    // Cleanup subscription when component unmounts
+    return () => {
+      client.unsubscribe(streamId);
+    };
   }, [client, streamId]);
 
   const handleSendMessage = (message) => {

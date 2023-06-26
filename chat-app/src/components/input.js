@@ -16,7 +16,6 @@ const ChatInput = ({ onSendMessage }) => {
     }}else if(message == undefined){
       window.alert('Message can not be empty')
     }
-    // console.log('Sending message:', message);
     setMessage('');
   };
 
