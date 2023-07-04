@@ -91,7 +91,7 @@ const Chat = () => {
       {/* Render the messages */}
       {messages.map((msg, index) => (
         <div key={index}>
-          <span>{msg.sender}: </span>
+          <span>{msg.sender}: </span>``
           <span>{msg.message}</span>
         </div>
       ))}
